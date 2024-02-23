@@ -17,6 +17,11 @@ def elapsed_time(start: float, end: float) -> Tuple[Days, Hours, Minutes, Second
     return days, hours, minutes, seconds
 
 
+def milis(start: float, end: float):
+    seconds = end - start
+    return 1000*seconds
+
+
 def print_elapsed_time(start: float, end: float) -> None:
     days, hours, minutes, seconds = elapsed_time(start, end)
     print(f'Elapsed Time: {days}D {hours}H {minutes}M {seconds}S')
