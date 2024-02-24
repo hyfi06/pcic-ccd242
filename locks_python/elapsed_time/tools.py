@@ -17,9 +17,14 @@ def elapsed_time(start: float, end: float) -> Tuple[Days, Hours, Minutes, Second
     return days, hours, minutes, seconds
 
 
-def milis(start: float, end: float):
+def elapsed_time_millis(start: float, end: float) -> float:
     seconds = end - start
     return 1000*seconds
+
+
+def elapsed_time_seconds(start: float, end: float) -> float:
+    seconds = end - start
+    return seconds
 
 
 def print_elapsed_time(start: float, end: float) -> None:
@@ -27,10 +32,26 @@ def print_elapsed_time(start: float, end: float) -> None:
     print(f'Elapsed Time: {days}D {hours}H {minutes}M {seconds}S')
 
 
+def print_millis(start: float, end: float) -> None:
+    millis: float = elapsed_time_millis(start, end)
+    print(f'Elapsed Time: {millis} milliseconds')
+
+
+def print_seconds(start: float, end: float) -> None:
+    seconds: float = elapsed_time_seconds(start, end)
+    print(f'Elapsed Time: {seconds} seconds')
+
+
+def timestamp(now: Optional[float] = None) -> datetime.datetime:
+    if not now:
+        now = time.time()
+    return datetime.datetime.fromtimestamp(now)
+
+
 def print_time(time_to_print: Optional[float] = None) -> float:
     if not time_to_print:
         time_to_print = time.time()
-    str_time = datetime.datetime.fromtimestamp(time_to_print)
+    str_time: datetime.datetime = timestamp(time_to_print)
     print(f"[{str_time}]")
     return time_to_print
 
