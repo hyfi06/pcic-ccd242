@@ -20,7 +20,6 @@ venv/
 profile_default/
 ipython_config.py
 
-
 # mypy
 .mypy_cache/
 .dmypy.json
@@ -28,6 +27,5 @@ dmypy.json
 
 .vscode
 
-# Tarea 4
-barley.bif.gz
-barley.bif
+# Java bin
+bin/
