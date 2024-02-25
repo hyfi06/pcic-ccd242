@@ -6,18 +6,24 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.NoSuchElementException;
 
-public class Main {
+public class Concurrent {
   public static void main(String[] args) {
-    // Marca de tiempo al inicio del programa
     long startTime = System.currentTimeMillis();
 
-    int threadsNum = 8; // Default value, replace with desired number
-    int length = 1000; // Default value, replace with desired number
+    int threadsNum = 8;
+    int length = 1000;
 
-    // Parse command line arguments if available
-    if (args.length >= 2) {
+    if (args.length >= 1) {
       try {
         threadsNum = Integer.parseInt(args[0]);
+      } catch (NumberFormatException e) {
+        System.err.println("Error parsing command line arguments");
+        System.exit(1);
+      }
+    }
+
+    if (args.length >= 2) {
+      try {
         length = Integer.parseInt(args[1]);
       } catch (NumberFormatException e) {
         System.err.println("Error parsing command line arguments");
@@ -30,11 +36,12 @@ public class Main {
       data.add(i);
     }
 
-    DispenserConcurrent<Integer> dispenser = new DispenserConcurrent<>(data);
+    ConcurrentDispenser<Integer> dispenser = new ConcurrentDispenser<>(data);
     List<Thread> threads = new ArrayList<>();
 
     for (int i = 0; i < threadsNum; i++) {
-      Thread thread = new Thread(() -> worker(dispenser, Thread.currentThread().threadId()));
+      long worker_id = i; // Thread.currentThread().threadId()
+      Thread thread = new Thread(() -> worker(dispenser, worker_id));
       thread.start();
       threads.add(thread);
     }
@@ -46,24 +53,26 @@ public class Main {
         e.printStackTrace();
       }
     }
-    // Marca de tiempo al final del programa
-    long endTime = System.currentTimeMillis();
 
-    // Calcula y muestra el tiempo total de ejecución
-    long totalTime = endTime - startTime;
-    System.out.println("Tiempo total de ejecución: " + totalTime + " ms");
+    long endTime = System.currentTimeMillis();
+    double totalTime = (double) (endTime - startTime) / 1000;
+    System.out.println("Tiempo total de ejecución: " + totalTime + " s");
   }
 
-  public static void worker(DispenserConcurrent<Integer> dispenser, long workerName) {
+  public static void worker(ConcurrentDispenser<Integer> dispenser, long workerName) {
+    int count = 0;
     try {
       while (true) {
         int data = dispenser.next();
-        ProofOfWorkResult result = proofOfWork(String.valueOf(data), 4); // Assuming difficulty is 4
-        // System.out.println("Worker " + workerName + ": " + data + " -> " + result.hashResult + " with nonce "
-            // + result.nonce + " in " + result.seconds + " s");
+        ProofOfWorkResult result = proofOfWork(String.valueOf(data), 4);
+        count += 1;
+        // System.out.println("Worker " + workerName + ": " + data + " -> " +
+        // result.hashResult + " with nonce "
+        // + result.nonce + " in " + result.seconds + " s");
       }
     } catch (NoSuchElementException e) {
       // No more elements to process
+      System.out.println("Worker " + workerName + " finished: " + count + " works");
     }
   }
 
@@ -110,11 +119,11 @@ public class Main {
     }
   }
 
-  static class DispenserConcurrent<T> {
+  static class ConcurrentDispenser<T> {
     private final List<T> data;
     private final Lock lock = new ReentrantLock();
 
-    public DispenserConcurrent(List<T> data) {
+    public ConcurrentDispenser(List<T> data) {
       this.data = data;
     }
 
@@ -123,7 +132,7 @@ public class Main {
       try {
         if (data.isEmpty())
           throw new NoSuchElementException();
-        return data.remove(data.size() - 1);
+        return data.remove(0);
       } finally {
         lock.unlock();
       }
