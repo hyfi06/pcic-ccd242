@@ -3,7 +3,7 @@ from typing import TypeVar, List, Generic
 T = TypeVar('T')
 
 
-class DispenserConcurrent(Generic[T]):
+class ConcurrentDispenser(Generic[T]):
     def __init__(self, data: List[T]) -> None:
         self.data: List[T] = data
         self.lock: threading.Lock = threading.Lock()
@@ -22,7 +22,7 @@ class DispenserConcurrent(Generic[T]):
             raise IndexError()
 
 
-class DispenserSerial(Generic[T]):
+class SerialDispenser(Generic[T]):
     def __init__(self, data: List[T]) -> None:
         self.data: List[T] = data
 

@@ -1,13 +1,13 @@
 import sys
 import threading
-from dispenser import DispenserConcurrent
+from dispenser import ConcurrentDispenser
 from elapsed_time.decorators import execution_time
 from elapsed_time.tools import print_seconds
 from config import data_len, threads
 from work import proof_of_work
 
 
-def worker(dispenser: DispenserConcurrent, workerName: int) -> None:
+def worker(dispenser: ConcurrentDispenser, workerName: int) -> None:
     try:
         while True:
             data: str = dispenser.next()
@@ -20,7 +20,7 @@ def worker(dispenser: DispenserConcurrent, workerName: int) -> None:
 
 @execution_time(print_seconds)
 def main(threads_num: int, length: int):
-    dispenser = DispenserConcurrent(list(range(length)))
+    dispenser = ConcurrentDispenser(list(range(length)))
     threads = []
     for i in range(threads_num):
         thread = threading.Thread(target=worker, args=(dispenser, i))

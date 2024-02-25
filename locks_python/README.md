@@ -3,3 +3,6 @@
 ## Instalación
 python 3.10.6
 No usa paquetes adicionales
+
+
+## Ejecución

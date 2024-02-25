@@ -1,12 +1,12 @@
 import sys
-from dispenser import DispenserSerial
+from dispenser import SerialDispenser
 from elapsed_time.decorators import execution_time
 from elapsed_time.tools import print_seconds
 from config import data_len
 from work import proof_of_work
 
 
-def worker(dispenser: DispenserSerial) -> None:
+def worker(dispenser: SerialDispenser) -> None:
     try:
         while True:
             data: str = dispenser.next()
@@ -18,7 +18,7 @@ def worker(dispenser: DispenserSerial) -> None:
 
 @execution_time(print_seconds)
 def main(length):
-    dispenser = DispenserSerial(list(range(length)))
+    dispenser = SerialDispenser(list(range(length)))
     worker(dispenser)
 
 
