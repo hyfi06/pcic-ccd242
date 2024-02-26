@@ -5,7 +5,7 @@ javac -d bin src/Concurrent.java
 run_and_save() {
   cores=$1
   numero=$2
-  java -cp bin Concurrent $1 1000 >"conc_1000_$cores-$numero.txt"
+  java -cp bin Concurrent $1 1000 >"conc_1k_$cores-$numero.txt"
 }
 
 export -f run_and_save
@@ -15,8 +15,8 @@ for j in $(seq 2 2 64); do
   for i in $(seq 1 10); do
     run_and_save $j $i
   done
-  cat conc_$j-*.txt >conc_$j.txt
-  rm conc_$j-*.txt
+  cat conc_1k_$j-*.txt >conc_1k_$j.txt
+  rm conc_1k_$j-*.txt
   echo $(date +%F_%T) run with $j cores finished
 done
 
